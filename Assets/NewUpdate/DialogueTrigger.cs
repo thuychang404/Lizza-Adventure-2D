@@ -21,7 +21,7 @@ public class DialogueTrigger : MonoBehaviour
     {
         InvokeOnDialoguePlay();
         FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
-        InvokeOnDialogueFinish();
+
     }
 
     // Trigger the dialogue with automatic next sentence
@@ -31,7 +31,6 @@ public class DialogueTrigger : MonoBehaviour
 
         InvokeOnDialoguePlay();
         FindObjectOfType<DialogueManager>().StartAutoNextSentence(dialogue, delayTime);
-        InvokeOnDialogueFinish();
     }
 
     // Trigger the dialogue and load the scene
@@ -57,19 +56,10 @@ public class DialogueTrigger : MonoBehaviour
         ToggleCharacterScripts(type);
     }
 
-    // Helper method to invoke OnDialoguePlay event if not null
+    // Helper method to invoke OnDialogueFinish event after a delay
     private void InvokeOnDialoguePlay()
     {
         if (OnDialoguePlay != null)
-        {
-            OnDialoguePlay.Invoke();
-        }
-    }
-
-    // Helper method to invoke OnDialogueFinish event after a delay
-    private void InvokeOnDialogueFinish()
-    {
-        if (OnDialogueFinish != null)
         {
             float sentenceDisplayTime = 0.5f;
             float totalTime = dialogue.sentences.Length * sentenceDisplayTime;
@@ -79,9 +69,9 @@ public class DialogueTrigger : MonoBehaviour
     }
 
     // Helper method to finish the dialogue
-    private void FinishInvoke()
+    private void PlayInvoke()
     {
-        OnDialogueFinish.Invoke();
+        OnDialoguePlay.Invoke();
     }
 
     // Helper method to toggle the special area
