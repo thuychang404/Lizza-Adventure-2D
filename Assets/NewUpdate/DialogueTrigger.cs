@@ -12,16 +12,40 @@ public class DialogueTrigger : MonoBehaviour
     public Dialogue dialogue;
 
     public UnityEvent OnDialoguePlay;
+
     public UnityEvent OnDialogueFinish;
 
     private DialogueManager dialogueManager;
 
+    void Start() {
+        dialogueManager = FindObjectOfType<DialogueManager>();
+    }
+
+    private void PlayInvoke() {
+        Debug.Log(dialogueManager.DialogueLength);
+        if(FindObjectOfType<DialogueManager>().DialogueLength == dialogue.sentences.Length - 1 && OnDialoguePlay.GetPersistentEventCount() > 0) 
+            OnDialoguePlay.Invoke();
+    }
+
+    private void FinishInvoke() {
+        Debug.Log("GetPersistentEventCount: " + OnDialogueFinish.GetPersistentEventCount());
+        if (FindObjectOfType<DialogueManager>().DialogueLength == 0 && OnDialogueFinish.GetPersistentEventCount() > 0) {
+            Debug.Log(dialogueManager.DialogueLength);
+            OnDialogueFinish.Invoke();
+            dialogueManager.DialogueLength = 100;
+        }
+    }
+
     // Trigger the dialogue with optional events
     public void TriggerDialogue()
     {
-        InvokeOnDialoguePlay();
+        dialogueManager.DialogueLength = dialogue.sentences.Length-1;
+        PlayInvoke();
+
         FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
 
+
+        FinishInvoke();
     }
 
     // Trigger the dialogue with automatic next sentence
@@ -29,8 +53,12 @@ public class DialogueTrigger : MonoBehaviour
     {
         StopAllCoroutines();
 
-        InvokeOnDialoguePlay();
+                PlayInvoke();
+
+        dialogueManager.DialogueLength = dialogue.sentences.Length-1;
+
         FindObjectOfType<DialogueManager>().StartAutoNextSentence(dialogue, delayTime);
+        FinishInvoke();
     }
 
     // Trigger the dialogue and load the scene
@@ -56,25 +84,6 @@ public class DialogueTrigger : MonoBehaviour
         ToggleCharacterScripts(type);
     }
 
-    // Helper method to invoke OnDialogueFinish event after a delay
-    private void InvokeOnDialoguePlay()
-    {
-        if (OnDialoguePlay != null)
-        {
-            float sentenceDisplayTime = 0.5f;
-            float totalTime = dialogue.sentences.Length * sentenceDisplayTime;
-            Debug.Log(totalTime);
-            Invoke("FinishInvoke", totalTime);
-        }
-    }
-
-    // Helper method to finish the dialogue
-    private void PlayInvoke()
-    {
-        OnDialoguePlay.Invoke();
-    }
-
-    // Helper method to toggle the special area
     private void ToggleSpecialArea(bool type)
     {
         if (specialArea != null)

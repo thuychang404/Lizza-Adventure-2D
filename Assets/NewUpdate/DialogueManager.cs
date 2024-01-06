@@ -14,18 +14,13 @@ public class DialogueManager : MonoBehaviour {
 	public Animator animator;
 
 	private Queue<string> sentences;
+	public int DialogueLength = 0;
 	// private float delayTime = 1f;
 
 	// Use this for initialization
 	void Start () {
 		sentences = new Queue<string>();
 	}
-
-	private string GetCurrentSentence()
-    {
-        // Return the current sentence being displayed
-        return sentences.Count > 0 ? sentences.Peek() : "";
-    }
 
 	private void SetTextCharacterTextName(String characterName) {
 		if (dialogueText == null || nameText == null)
@@ -40,12 +35,14 @@ public class DialogueManager : MonoBehaviour {
 		if(characterName == "Chupter") {nameText.color = Color.magenta;}
 		else if (characterName == "Giọng nói thiên thần") {nameText.color = Color.blue;}
 		else if (characterName == "Hệ thống") {nameText.color = Color.black;}
-		else {nameText.color = Color.green;}
+		else {nameText.color = Color.cyan;}
 	}
 	
 
 	public void StartDialogue (Dialogue dialogue)
 	{
+		// PlayInvoke();
+
 		animator.SetBool("IsOpen", true);
 
 		SetTextCharacterTextName(dialogue.name);
@@ -78,6 +75,11 @@ public class DialogueManager : MonoBehaviour {
 
 	IEnumerator TypeSentence (string sentence)
 	{
+		if(DialogueLength > 0) DialogueLength = DialogueLength - 1;
+		else if (DialogueLength <= 0) DialogueLength = 0;
+
+		Debug.Log(DialogueLength);
+
 		dialogueText.text = "";
 		foreach (char letter in sentence.ToCharArray())
 		{
@@ -94,6 +96,8 @@ public class DialogueManager : MonoBehaviour {
 
 	private IEnumerator AutoNextSentence(Dialogue dialogue, float delayTime)
 	{
+		// PlayInvoke();
+
 		animator.SetBool("IsOpen", true);
 
 		SetTextCharacterTextName(dialogue.name);
@@ -137,6 +141,7 @@ public class DialogueManager : MonoBehaviour {
 	public void EndDialogue()
 	{
 		animator.SetBool("IsOpen", false);
+		DialogueLength = 0;
 	}
 
 }
