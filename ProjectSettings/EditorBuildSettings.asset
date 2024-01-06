@@ -71,7 +71,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Zone6.unity
     guid: c034ccda79d31254fa711954d25cf263
-  - enabled: 1
+  - enabled: 0
     path: Assets/SelectDifficulty.unity
     guid: 3588453f730522345a31253703522583
   m_configObjects: {}
